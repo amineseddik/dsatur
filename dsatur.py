@@ -8,51 +8,55 @@ color_palette = sns.color_palette("tab20", 20).as_hex()
 
 def dsatur(graph):
     """
-    Algorithme DSATUR pour la coloration de graphe.
+    DSATUR algorithm for graph coloring.
+
+    :param graph: Dictionary representing the graph, where keys are nodes and values are lists of neighbors.
+    :return: Dictionary mapping each vertex to its assigned color.
     """
-    colors = {}  # Dictionnaire pour stocker les couleurs attribuées à chaque sommet
-    dsat = {}    # DSAT (degré de saturation) pour chaque sommet
-    degree = {node: len(neighbors) for node, neighbors in graph.items()}  # Degré de chaque sommet
-    uncolored = set(graph.keys())  # Ensemble des sommets non colorés
-    
-    # Initialiser DSAT pour chaque sommet
+    # Initialization
+    colors = {}  # Stores the colors of vertices
+    dsat = {}    # Degree of saturation (DSAT) for each vertex
+    degree = {node: len(neighbors) for node, neighbors in graph.items()}  # Degree of each vertex
+    uncolored = set(graph.keys())  # Set of uncolored vertices
+
+    # Initialize DSAT for each vertex
     for node in graph:
-        dsat[node] = degree[node]
-    
-    # Colorer le sommet avec le degré maximum
+        dsat[node] = degree[node]  # Initially DSAT is the degree for all vertices
+
+    # Color the vertex with the maximum degree
     first_vertex = max(graph.keys(), key=lambda x: degree[x])
     colors[first_vertex] = 1
     uncolored.remove(first_vertex)
-    
-    # Mettre à jour les valeurs DSAT après avoir colorié le premier sommet
+
+    # Update DSAT values after coloring the first vertex
     for neighbor in graph[first_vertex]:
         if neighbor in uncolored:
             dsat[neighbor] = len({colors[n] for n in graph[neighbor] if n in colors})
-    
-    # Coloration des sommets restants
+
+    # Process remaining vertices
     while uncolored:
-        # Sélectionner le sommet avec le DSAT maximum, puis avec le degré maximum en cas d'égalité
+        # Select vertex with maximum DSAT; in case of tie, choose the one with highest degree
         next_vertex = max(uncolored, key=lambda x: (dsat[x], degree[x]))
-        
-        # Trouver la plus petite couleur disponible
+
+        # Find the smallest available color
         used_colors = {colors[neighbor] for neighbor in graph[next_vertex] if neighbor in colors}
         color = 1
         while color in used_colors:
             color += 1
-        
-        # Attribuer une couleur au sommet
+
+        # Assign color to the vertex
         colors[next_vertex] = color
         uncolored.remove(next_vertex)
-        
-        # Mettre à jour les valeurs DSAT pour les voisins non colorés
+
+        # Update DSAT values for all uncolored neighbors
         for neighbor in graph[next_vertex]:
             if neighbor in uncolored:
                 colored_neighbors = {colors[n] for n in graph[neighbor] if n in colors}
                 if colored_neighbors:
                     dsat[neighbor] = len(colored_neighbors)
                 else:
-                    dsat[neighbor] = degree[neighbor]
-    
+                    dsat[neighbor] = degree[neighbor]  # If no neighbor is colored, DSAT is the degree
+
     return colors
 
 def visualize_graph(graph, colors):
