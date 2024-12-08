@@ -97,6 +97,11 @@ def main():
             color: #117864;
             margin-top: 20px;
         }
+        .color-text {
+            font-size: 18px;
+            color: #000080; /* Bleu foncé */
+            margin-bottom: 10px;
+        }
         </style>
         """, unsafe_allow_html=True
     )
