@@ -1,7 +1,7 @@
 import streamlit as st
 import networkx as nx
 import matplotlib.pyplot as plt
-
+import seaborn as sns
 
 # Palette de couleurs
 color_palette = sns.color_palette("tab20", 20).as_hex()
